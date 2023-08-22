@@ -1,0 +1,49 @@
+def is_valid(graph, coloring, node, color):
+    for neighbor in graph[node]:
+        if neighbor in coloring and coloring[neighbor] == color:
+            return False
+    return True
+
+def backtrack_coloring(graph, colors, nodes, coloring):
+    if not nodes:
+        return True
+
+    node = nodes[0]
+    for color in colors:
+        if is_valid(graph, coloring, node, color):
+            coloring[node] = color
+            if backtrack_coloring(graph, colors, nodes[1:], coloring):
+                return True
+            coloring.pop(node)
+    return False
+
+def map_coloring(graph, colors):
+    coloring = {}
+    nodes = list(graph.keys())
+    if backtrack_coloring(graph, colors, nodes, coloring):
+        return coloring
+    else:
+        return None
+
+def main():
+    graph = {}
+    num_regions = int(input("Enter the number of regions: "))
+    
+    for _ in range(num_regions):
+        region = input("Enter the name of a region: ")
+        adjacents = input(f"Enter adjacent regions for {region} (comma-separated): ").split(',')
+        graph[region] = [adj.strip() for adj in adjacents]
+    
+    num_colors = int(input("Enter the number of available colors: "))
+    colors = [input(f"Enter color {i + 1}: ") for i in range(num_colors)]
+    
+    coloring_result = map_coloring(graph, colors)
+    if coloring_result:
+        print("Map coloring solution:")
+        for region, color in coloring_result.items():
+            print(f"{region}: {color}")
+    else:
+        print("No solution found.")
+
+if __name__ == "__main__":
+    main()
