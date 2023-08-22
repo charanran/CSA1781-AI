@@ -1,0 +1,55 @@
+def minimax_alpha_beta(node, depth, alpha, beta, maximizing_player):
+    if depth == 0 or node.is_terminal():
+        return node.evaluate()
+
+    if maximizing_player:
+        value = float('-inf')
+        for child in node.get_children():
+            value = max(value, minimax_alpha_beta(child, depth - 1, alpha, beta, False))
+            alpha = max(alpha, value)
+            if beta <= alpha:
+                break
+        return value
+    else:
+        value = float('inf')
+        for child in node.get_children():
+            value = min(value, minimax_alpha_beta(child, depth - 1, alpha, beta, True))
+            beta = min(beta, value)
+            if beta <= alpha:
+                break
+        return value
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.children = []
+
+    def add_child(self, child):
+        self.children.append(child)
+
+    def get_children(self):
+        return self.children
+
+    def evaluate(self):
+        return self.value
+
+    def is_terminal(self):
+        return not self.children
+def build_tree():
+    root_value = int(input("Enter the root node value: "))
+    root = Node(root_value)
+    num_children = int(input("Enter the number of children for the root node: "))
+    
+    for _ in range(num_children):
+        child_value = int(input("Enter the value of a child node: "))
+        child = Node(child_value)
+        root.add_child(child)
+
+    return root
+def main():
+    root = build_tree()
+    depth = int(input("Enter the depth for the minimax search: "))
+    result = minimax_alpha_beta(root, depth, float('-inf'), float('inf'), True)
+    print("Result:", result)
+
+if __name__ == "__main__":
+    main()
